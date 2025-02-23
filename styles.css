@@ -1,22 +1,3 @@
-/* body {
-    font-family: sans-serif;
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-p {
-    font-size: 1.5rem;
-    color: #333;
-}
-
-span {
-    color: #f00;
-    font-weight: bold;
-} */
-
 #map {
     height: 100vh;
 }

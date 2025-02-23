@@ -3,6 +3,8 @@ let lat = "";
 let long = "";
 let vel = "";
 let marker = null;
+let firstFetch = true;
+const duration = 1000;
 
 getIssPosition();
 
@@ -12,17 +14,10 @@ var map = L.map('map', {
     maxBoundsViscosity: 1.0
 }).fitBounds([[-60, -170], [85, 170]]);
 
-map.setView([long, lat], 3.5);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors',
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: '&copy; <a href="https://www.esri.com/">Esri</a> & contributors',
     noWrap: true
 }).addTo(map);
-
-var greenIcon = L.icon({
-    iconUrl: 'icons/iss.png',
-    iconSize: [50, 50]
-});
 
 async function getIssPosition() {
     const url = 'https://api.wheretheiss.at/v1/satellites/25544'
@@ -42,7 +37,11 @@ async function getIssPosition() {
             long = await json.longitude;
             vel = await json.velocity;
 
-            addMarker();
+            if(firstFetch) {
+                map.setView([lat, long], 3);
+                addMarker();
+                firstFetch = false;
+            }
         } else {
             console.error("problem with Json format")
         }
@@ -67,10 +66,15 @@ function addMarker() {
         return;
     }
 
-    marker = L.marker([lat, long], {icon: greenIcon}).addTo(map);
+    marker = L.circleMarker([lat, long], {
+        color: 'white',
+        fillColor: 'blue',
+        fillOpacity: 0.7,
+        radius: 10
+    }).addTo(map);
 }
 
-setInterval(updateISSPosition, 5000);
+setInterval(updateISSPosition, duration);
 
 
 
